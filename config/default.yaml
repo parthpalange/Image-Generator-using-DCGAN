@@ -1,0 +1,41 @@
+# =============================================================================
+# DCGAN Training Pipeline — Default Configuration
+# =============================================================================
+# This file contains every tuneable hyperparameter used by the preprocessing,
+# training, and evaluation scripts.  Override individual values by passing a
+# custom YAML via --config or by setting environment variables prefixed with
+# DCGAN_ (e.g. DCGAN_TRAINING_EPOCHS=500).
+# =============================================================================
+
+# ---- Data ------------------------------------------------------------------
+data:
+  raw_dir: "data/raw"                # Source directory with raw images (nested subdirs OK)
+  processed_dir: "data/processed"    # Destination for resized / RGB-converted images
+  image_size: 256                    # Spatial resolution (images resized to image_size × image_size)
+  channels: 3                        # Number of colour channels (3 = RGB)
+  num_workers: 4                     # DataLoader worker processes
+
+# ---- Model -----------------------------------------------------------------
+model:
+  latent_dim: 100                    # Dimensionality of the latent / noise vector z
+  g_features: 64                     # Base feature-map size in the Generator
+  d_features: 64                     # Base feature-map size in the Discriminator
+
+# ---- Training --------------------------------------------------------------
+training:
+  epochs: 200                        # Total training epochs
+  batch_size: 16                     # Mini-batch size (reduced for 256×256 to fit in GPU memory)
+  lr_g: 0.0002                       # Generator learning rate (Adam)
+  lr_d: 0.0002                       # Discriminator learning rate (Adam)
+  beta1: 0.5                         # Adam β₁
+  beta2: 0.999                       # Adam β₂
+  label_smoothing: 0.9               # One-sided label smoothing for real labels
+  save_interval: 10                  # Save model checkpoint every N epochs
+  sample_interval: 500               # Generate sample grid every N global steps
+  device: "auto"                     # "auto" → CUDA if available, else CPU
+
+# ---- Output ----------------------------------------------------------------
+output:
+  model_dir: "models/"               # Directory for saved model checkpoints
+  output_dir: "outputs/"             # Directory for generated samples / artefacts
+  log_dir: "outputs/logs/"           # TensorBoard / training log directory
